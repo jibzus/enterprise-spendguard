@@ -2,6 +2,33 @@
 
 This directory contains the LangFlow-based RAG (Retrieval-Augmented Generation) pipeline that enables SpendGuard's Policy Analyst to dynamically retrieve policy information from documents.
 
+## Current Implementation Status
+
+✅ **Completed:**
+- LangFlow v1.7.3 installed and running at http://127.0.0.1:7860
+- All required components added to flow:
+  - Read File (for loading procurement-policy.pdf)
+  - Recursive Character Text Splitter (1000 chunk size, 200 overlap)
+  - OpenAI Embeddings (text-embedding-3-small)
+  - Chroma DB (vector store)
+  - Language Model (OpenAI gpt-4o-mini)
+  - Chat Input/Output
+- OpenAI API key configured in components
+- Flow exported as `SpendGuard-Policy-RAG.json`
+
+⏳ **Manual Steps Required:**
+1. **Arrange Components**: Drag components apart on the canvas (they overlap)
+2. **Connect Components** (drag from output port to input port):
+   - Read File → Recursive Text Splitter (Input)
+   - Recursive Text Splitter → Chroma DB (Ingest Data)
+   - OpenAI Embeddings → Chroma DB (Embedding)
+   - Chat Input → Chroma DB (Search Query)
+   - Chat Input → Language Model (Input)
+   - Chroma DB (Search Results) → Language Model (System Message as context)
+   - Language Model (Model Response) → Chat Output
+3. **Upload Policy Document**: Click "Select files" in Read File component
+4. **Test**: Open Playground and ask a policy question
+
 ## Architecture Overview
 
 ```
@@ -246,9 +273,23 @@ wxo-adk auth status
 
 | File | Purpose |
 |------|---------|
-| `policy-rag-flow.json` | LangFlow flow definition (exported) |
+| `SpendGuard-Policy-RAG.json` | LangFlow flow definition (exported) - import this to continue |
 | `adk_policy_tool.py` | ADK tool wrapper for watsonx integration |
 | `README.md` | This documentation |
+
+## Starting LangFlow
+
+```bash
+cd langflow
+source .venv/bin/activate
+langflow run
+# Opens at http://127.0.0.1:7860
+```
+
+To import the exported flow:
+1. Open LangFlow UI
+2. Create new project or use existing
+3. Click "Import" or drag the JSON file onto the canvas
 
 ## References
 
