@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpendGuard AI - Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            min-height: 100vh;
+            padding: 40px;
+            color: #fff;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .kpi {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .kpi-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #ea4335, #34a853);
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .node {
+            padding: 20px 30px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+        }
+        .user {
+            background: #2d2d5a;
+            border: 2px solid #4facfe;
+        }
+        .coordinator {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            width: 80%;
+            padding: 25px;
+        }
+        .coordinator h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        .coordinator-steps {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .step {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .arrow {
+            font-size: 2rem;
+            color: #4facfe;
+        }
+        .arrow-label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: -10px;
+        }
+        .specialists {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            justify-content: center;
+        }
+        .specialist {
+            flex: 1;
+            max-width: 300px;
+            padding: 25px;
+            border-radius: 12px;
+        }
+        .policy-analyst {
+            background: linear-gradient(135deg, #34a853, #1e8e3e);
+        }
+        .transaction-bot {
+            background: linear-gradient(135deg, #fbbc04, #f9a825);
+            color: #000;
+        }
+        .specialist h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .specialist ul {
+            list-style: none;
+            text-align: left;
+        }
+        .specialist li {
+            padding: 5px 0;
+            font-size: 0.9rem;
+        }
+        .specialist li::before {
+            content: "→ ";
+            opacity: 0.7;
+        }
+        .outcomes {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            justify-content: center;
+        }
+        .outcome {
+            padding: 20px 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .violation {
+            background: linear-gradient(135deg, #ea4335, #c5221f);
+        }
+        .compliant {
+            background: linear-gradient(135deg, #34a853, #1e8e3e);
+        }
+        .flow-line {
+            width: 2px;
+            height: 30px;
+            background: #4facfe;
+            margin: 0 auto;
+        }
+        .flow-split {
+            display: flex;
+            width: 60%;
+            justify-content: space-between;
+            position: relative;
+        }
+        .flow-split::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 25%;
+            right: 25%;
+            height: 2px;
+            background: #4facfe;
+        }
+        .flow-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .tech-stack {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+        .tech-stack h4 {
+            margin-bottom: 15px;
+            color: #888;
+        }
+        .tech-badges {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .tech-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SpendGuard AI</h1>
+        <p class="subtitle">Policy-Aware Procurement Orchestrator</p>
+
+        <div class="kpi">
+            <div class="kpi-badge">30% rejection → &lt;1% rejection</div>
+        </div>
+
+        <div class="diagram">
+            <!-- User -->
+            <div class="node user">
+                <strong>👤 User Request</strong><br>
+                <small>"Order a MacBook for our intern..."</small>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <!-- Coordinator -->
+            <div class="node coordinator">
+                <h3>🎯 SpendGuard Coordinator</h3>
+                <div class="coordinator-steps">
+                    <div class="step">1. Extract details</div>
+                    <div class="step">2. Route to Policy Analyst</div>
+                    <div class="step">3. Gate all PR creation</div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+            <div class="arrow-label">ALWAYS FIRST</div>
+
+            <!-- Policy Analyst -->
+            <div class="node specialist policy-analyst">
+                <h3>🔍 Policy Analyst</h3>
+                <ul>
+                    <li>Check equipment tiers by role</li>
+                    <li>Validate spending limits</li>
+                    <li>Cite specific policy sections</li>
+                    <li>Return COMPLIANT or VIOLATION</li>
+                </ul>
+            </div>
+
+            <!-- Split -->
+            <div class="flow-split">
+                <div class="flow-branch">
+                    <div class="flow-line"></div>
+                    <div class="node outcome violation">
+                        <strong>❌ VIOLATION</strong><br>
+                        <small>Suggest alternatives</small>
+                    </div>
+                </div>
+                <div class="flow-branch">
+                    <div class="flow-line"></div>
+                    <div class="node outcome compliant">
+                        <strong>✅ COMPLIANT</strong><br>
+                        <small>Proceed to PR</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction Bot (only for compliant) -->
+            <div style="display: flex; width: 100%; justify-content: flex-end; padding-right: 15%;">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="arrow">↓</div>
+                    <div class="node specialist transaction-bot">
+                        <h3>📋 Transaction Bot</h3>
+                        <ul>
+                            <li>Create purchase requisition</li>
+                            <li>Assign vendor & cost center</li>
+                            <li>Notify manager for approval</li>
+                        </ul>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="node" style="background: #1e8e3e; padding: 15px 30px;">
+                        <strong>PR-2024-48327</strong><br>
+                        <small>Pending Approval</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RAG Pipeline Section -->
+        <div class="rag-pipeline" style="margin-top: 40px; padding: 25px; background: rgba(79, 172, 254, 0.1); border: 2px solid #4facfe; border-radius: 12px;">
+            <h3 style="text-align: center; margin-bottom: 20px; color: #4facfe;">Phase 1: Document Intelligence Pipeline</h3>
+            <div style="display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                <div class="node" style="background: #2d2d5a; border: 2px solid #9c27b0; padding: 15px;">
+                    <strong style="color: #ce93d8;">Docling</strong><br>
+                    <small>PDF Parser</small>
+                </div>
+                <span style="color: #4facfe; font-size: 1.5rem;">→</span>
+                <div class="node" style="background: #2d2d5a; border: 2px solid #ff9800; padding: 15px;">
+                    <strong style="color: #ffb74d;">LangFlow</strong><br>
+                    <small>RAG Pipeline</small>
+                </div>
+                <span style="color: #4facfe; font-size: 1.5rem;">→</span>
+                <div class="node" style="background: #2d2d5a; border: 2px solid #00bcd4; padding: 15px;">
+                    <strong style="color: #4dd0e1;">Chroma</strong><br>
+                    <small>Vector Store</small>
+                </div>
+                <span style="color: #4facfe; font-size: 1.5rem;">→</span>
+                <div class="node" style="background: #2d2d5a; border: 2px solid #1a73e8; padding: 15px;">
+                    <strong style="color: #64b5f6;">ADK Tool</strong><br>
+                    <small>policy_rag_lookup</small>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 15px; color: #888; font-size: 0.9rem;">
+                Enables dynamic policy retrieval with section-level citations
+            </p>
+        </div>
+
+        <!-- Future: Cassandra -->
+        <div class="cassandra-future" style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.03); border: 1px dashed #555; border-radius: 12px;">
+            <h4 style="text-align: center; color: #666; margin-bottom: 10px;">Phase 2 Roadmap: Enterprise Data Layer</h4>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <div style="text-align: center; padding: 10px 20px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span style="font-size: 1.5rem;">🗄️</span><br>
+                    <small style="color: #888;">DataStax Astra<br>(Cassandra)</small>
+                </div>
+                <div style="text-align: center; padding: 10px 20px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span style="font-size: 1.5rem;">📜</span><br>
+                    <small style="color: #888;">Versioned<br>Policy Store</small>
+                </div>
+                <div style="text-align: center; padding: 10px 20px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span style="font-size: 1.5rem;">📊</span><br>
+                    <small style="color: #888;">Audit Trail<br>& Analytics</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <h4>Built with IBM watsonx Orchestrate</h4>
+            <div class="tech-badges">
+                <span class="tech-badge">Multi-Agent System</span>
+                <span class="tech-badge">GPT-OSS 120B</span>
+                <span class="tech-badge">Docling RAG</span>
+                <span class="tech-badge">ADK Integration</span>
+                <span class="tech-badge">Policy Gating</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
